@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online-Quiz: Einsteins Aufsatz „E = mc²“</title>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --card:#111827; /* gray-900 */
+      --ink:#e5e7eb; /* gray-200 */
+      --muted:#9ca3af; /* gray-400 */
+      --accent:#38bdf8; /* sky-400 */
+      --good:#22c55e; /* green-500 */
+      --bad:#ef4444; /* red-500 */
+      --warn:#f59e0b; /* amber-500 */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 80% -10%, #1f2937, var(--bg));
+      color: var(--ink);
+      line-height:1.55;
+    }
+    .wrap{max-width:1000px;margin:0 auto;padding:32px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    h1{font-size:clamp(1.4rem, 1.2rem + 1.4vw, 2.2rem);margin:0}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.07); border-radius:18px; padding:22px; box-shadow:0 10px 30px rgba(0,0,0,0.25)}
+    .meta{color:var(--muted); font-size:0.95rem}
+    .controls{display:flex;gap:12px;flex-wrap:wrap}
+    button{appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:600;cursor:pointer;transition:transform .06s ease, background .2s ease, opacity .2s ease}
+    button:active{transform:translateY(1px)}
+    .primary{background:var(--accent); color:#00253a}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.18);color:var(--ink)}
+    .muted{background:rgba(255,255,255,0.06); color:var(--ink)}
+    .pill{background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:var(--accent); padding:6px 10px; border-radius:999px; font-weight:700; letter-spacing:0.02em}
+
+    .q{margin:18px 0 8px; font-weight:700}
+    fieldset{border:none;margin:0 0 8px;padding:0}
+    .option{display:flex;gap:10px;align-items:flex-start; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02)}
+    .option + .option{margin-top:8px}
+    .option input{margin-top:3px}
+
+    .correct{border-color: rgba(34,197,94,.7); background: rgba(34,197,94,.08)}
+    .incorrect{border-color: rgba(239,68,68,.7); background: rgba(239,68,68,.08)}
+    .explain{color:var(--muted); font-size:0.95rem; margin:6px 2px 0}
+
+    .score{font-size:1.05rem; font-weight:700}
+    .score strong{font-size:1.2rem}
+
+    .grid{display:grid; grid-template-columns: 1fr; gap:16px}
+    @media (min-width: 800px){
+      .grid{grid-template-columns: 1fr 1fr}
+    }
+    .footer-note{color:var(--muted); font-size:0.9rem; text-align:center; margin-top:18px}
+    .hide{display:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="pill" aria-hidden="true">8 Fragen · Multiple Choice</div>
+        <h1>Online‑Quiz: Einsteins Aufsatz „E = mc²“ (1946)</h1>
+        <div class="meta">Basierend auf dem Textauszug zum Energie‑Masse‑Äquivalenzprinzip.</div>
+      </div>
+      <div class="controls">
+        <button id="check" class="primary" aria-label="Auswertung starten">Auswerten</button>
+        <button id="reset" class="ghost" aria-label="Antworten zurücksetzen">Zurücksetzen</button>
+      </div>
+    </header>
+
+    <main class="grid" id="quiz" aria-live="polite">
+      <!-- Fragen werden per JS injiziert -->
+    </main>
+
+    <section class="card" id="results" aria-live="polite">
+      <div class="score">Punktzahl: <strong id="score">0 / 8</strong></div>
+      <div id="feedback" class="meta">Beantworte alle Fragen und klicke dann auf <em>Auswerten</em>.</div>
+    </section>
+
+    <p class="footer-note">Tipp: Die richtigen Antworten werden nach der Auswertung grün markiert, falsche rot. Mit <em>Zurücksetzen</em> startest du neu.</p>
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      {
+        q: "Welche beiden Erhaltungssätze galten in der vor-relativistischen Physik als unabhängig voneinander?",
+        options: [
+          "Energie und Geschwindigkeit",
+          "Masse und Volumen",
+          "Energie und Masse",
+          "Wärme und Elektrizität",
+        ],
+        correct: 2,
+        explain: "Vor der Relativitätstheorie betrachtete man Energie- und Massenerhaltung als getrennte Prinzipien."
+      },
+      {
+        q: "Wie lässt sich am Beispiel des Pendels der Satz von der Erhaltung der Energie veranschaulichen?",
+        options: [
+          "Durch die Umwandlung von Lageenergie in Bewegungsenergie und umgekehrt",
+          "Durch die gleichmäßige Abnahme der Masse des Pendels",
+          "Durch die Zunahme der Schwerkraft bei größeren Ausschlägen",
+          "Durch die Veränderung der Bahnlänge",
+        ],
+        correct: 0,
+        explain: "Die Höhe (potentielle Energie) wandelt sich in Geschwindigkeit (kinetische Energie) und zurück."
+      },
+      {
+        q: "Warum wurde der ‚Satz von der Erhaltung der Wärme‘ später mit dem Energieerhaltungssatz zusammengeführt?",
+        options: [
+          "Weil Wärme kein real existierender Stoff ist",
+          "Weil Wärme unabhängig von mechanischer Energie entsteht",
+          "Weil Wärme nicht gemessen werden kann",
+          "Weil Wärme nur bei chemischen Reaktionen vorkommt",
+        ],
+        correct: 0,
+        explain: "Wärme ist Energieform; Reibung zeigt die Äquivalenz zwischen mechanischer und thermischer Energie."
+      },
+      {
+        q: "Wie wird die Masse im physikalischen Sinn definiert?",
+        options: [
+          "Als Größe der elektrischen Ladung",
+          "Als Widerstand gegen Beschleunigung (träge Masse) und als Gewicht im Schwerefeld (schwere Masse)",
+          "Als Menge an gespeicherter Energie",
+          "Als Volumen eines Körpers",
+        ],
+        correct: 1,
+        explain: "Träge und schwere Masse liefern empirisch denselben Zahlenwert."
+      },
+      {
+        q: "Wie veränderte die spezielle Relativitätstheorie den Satz von der Erhaltung der Masse?",
+        options: [
+          "Sie bestätigte ihn ohne Änderungen",
+          "Sie zeigte, dass Masse und Energie ineinander überführbar sind",
+          "Sie erklärte, dass Masse keine physikalische Bedeutung hat",
+          "Sie stellte Masse und Volumen gleich",
+        ],
+        correct: 1,
+        explain: "Masseerhaltung wird durch Energieerhaltung ersetzt: E und m sind äquivalent (E = m·c²)."
+      },
+      {
+        q: "Was besagt die berühmte Formel E = m · c²?",
+        options: [
+          "Energie ist unabhängig von der Masse",
+          "Masse und Energie sind äquivalent und durch die Lichtgeschwindigkeit verknüpft",
+          "Energie ist kleiner als die Masse",
+          "Die Lichtgeschwindigkeit hängt von der Energie ab",
+        ],
+        correct: 1,
+        explain: "Die im Körper ruhend ‚steckende‘ Energie ist proportional zur Masse (Faktor c²)."
+      },
+      {
+        q: "Warum kann man die winzigen Massenzunahmen bei alltäglichen Energiezufuhren nicht messen?",
+        options: [
+          "Weil Masse nicht messbar ist",
+          "Weil der Faktor c² im Nenner die Veränderungen extrem klein macht",
+          "Weil Energie keine Wirkung auf Masse hat",
+          "Weil Waagen zu ungenau gebaut sind",
+        ],
+        correct: 1,
+        explain: "Δm = E/c² – durch c² wird die Massendifferenz mikroskopisch klein."
+      },
+      {
+        q: "Was passiert beim radioaktiven Zerfall mit der Masse des ursprünglichen Atoms?",
+        options: [
+          "Die Gesamtmasse bleibt exakt gleich",
+          "Die Zerfallsprodukte haben zusammen etwas weniger Masse als das ursprüngliche Atom",
+          "Die Masse der Produkte ist größer als die Ausgangsmasse",
+          "Die Masse verschwindet vollständig",
+        ],
+        correct: 1,
+        explain: "Ein Teil der Ruhemasse wird als kinetische Energie frei – die Massensumme sinkt geringfügig."
+      }
+    ];
+
+    const quizEl = document.getElementById('quiz');
+    const resultsEl = document.getElementById('results');
+    const scoreEl = document.getElementById('score');
+    const feedbackEl = document.getElementById('feedback');
+
+    function renderQuiz(){
+      quizEl.innerHTML = '';
+      QUESTIONS.forEach((item, idx) => {
+        const card = document.createElement('section');
+        card.className = 'card';
+        card.innerHTML = `
+          <h2 class="q">Frage ${idx+1}: ${item.q}</h2>
+          <fieldset role="radiogroup" aria-labelledby="q${idx}">
+            ${item.options.map((opt, i) => `
+              <label class="option">
+                <input type="radio" name="q${idx}" value="${i}" />
+                <span>${opt}</span>
+              </label>
+            `).join('')}
+          </fieldset>
+          <div class="explain hide" id="exp${idx}">${item.explain}</div>
+        `;
+        quizEl.appendChild(card);
+      });
+    }
+
+    function evaluate(){
+      let score = 0;
+      const sections = quizEl.querySelectorAll('section.card');
+      sections.forEach((sec, idx) => {
+        const radios = sec.querySelectorAll(`input[name="q${idx}"]`);
+        let chosen = -1;
+        radios.forEach(r => { if(r.checked) chosen = parseInt(r.value, 10); });
+        const labels = sec.querySelectorAll('.option');
+        labels.forEach((lab, i) => {
+          lab.classList.remove('correct','incorrect');
+          const isCorrect = i === QUESTIONS[idx].correct;
+          const selected = i === chosen;
+          if(isCorrect) lab.classList.add('correct');
+          if(selected && !isCorrect) lab.classList.add('incorrect');
+          lab.querySelector('input').disabled = true;
+        });
+        const exp = sec.querySelector(`#exp${idx}`);
+        exp.classList.remove('hide');
+        if(chosen === QUESTIONS[idx].correct) score++;
+      });
+      scoreEl.textContent = `${score} / ${QUESTIONS.length}`;
+      const ratio = score / QUESTIONS.length;
+      let msg = 'Gut gemacht!';
+      if(ratio === 1) msg = 'Perfekt – alle richtig!';
+      else if(ratio >= 0.75) msg = 'Sehr stark!';
+      else if(ratio >= 0.5) msg = 'Ordentlicher Versuch – noch etwas Luft nach oben.';
+      else msg = 'Kein Problem – lerne aus den Erklärungen und probiere es erneut!';
+      feedbackEl.textContent = msg;
+      document.getElementById('check').disabled = true;
+    }
+
+    function resetQuiz(){
+      renderQuiz();
+      scoreEl.textContent = `0 / ${QUESTIONS.length}`;
+      feedbackEl.textContent = 'Beantworte alle Fragen und klicke dann auf Auswerten.';
+      document.getElementById('check').disabled = false;
+    }
+
+    document.getElementById('check').addEventListener('click', evaluate);
+    document.getElementById('reset').addEventListener('click', resetQuiz);
+
+    // Initial render
+    renderQuiz();
+  </script>
+</body>
+</html>
