@@ -1,1 +1,25 @@
+const fs = require('fs');
+const path = require('path');
 
+const files = fs.readdirSync(__dirname).filter(f => f.endsWith('.html') && f !== 'index.html');
+
+const links = files.map(file => `<li><a href="${file}">${file}</a></li>`).join('\n');
+
+const html = `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Seiten Übersicht</title>
+</head>
+<body>
+    <h1>Alle HTML Seiten</h1>
+    <ul>
+        <li><a href="index.html">index.html</a></li>
+        ${links}
+    </ul>
+</body>
+</html>
+`;
+
+fs.writeFileSync(path.join(__dirname, 'index.html'), html);
