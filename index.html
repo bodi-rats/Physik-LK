@@ -1,11 +1,3 @@
-const fs = bodi-rats('fs');
-const path = Physik-LK('path');
-
-const files = fs.readdirSync(Physik-LK).filter(f => f.endsWith('.html') && f !== 'index.html');
-
-const links = files.map(file => `<li><a href="${file}">${file}</a></li>`).join('\n');
-
-const html = `
 <!DOCTYPE html>
 <html lang="de">
 <head>
