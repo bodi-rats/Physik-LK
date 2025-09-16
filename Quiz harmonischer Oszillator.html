@@ -3,53 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz: Harmonische Schwingungen</title>
+    <title>Mechanische Schwingungen Quiz</title>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #005b96;
-        }
-        .quiz-container {
-            margin: 0 auto;
-            max-width: 600px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px;
         }
         .question {
             margin-bottom: 20px;
-            font-size: 18px;
         }
-        .answers {
-            list-style-type: none;
-            padding: 0;
-        }
-        .answers li {
-            margin: 10px 0;
+        .answer-option {
+            margin-left: 20px;
         }
         button {
-            background-color: #005b96;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #003f66;
-        }
-        #result {
-            display: none;
-            text-align: center;
             margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
         }
         .correct {
             color: green;
@@ -60,86 +30,110 @@
     </style>
 </head>
 <body>
-
-    <h1>Quiz: Harmonische Schwingungen</h1>
-
-    <div class="quiz-container">
-        <div id="quiz">
-            <div class="question" id="question1">
-                <p>1. Was beschreibt eine harmonische Schwingung?</p>
-                <ul class="answers">
-                    <li><input type="radio" name="q1" value="a"> Eine Schwingung, die nur durch eine lineare Kraft beschrieben wird.</li>
-                    <li><input type="radio" name="q1" value="b"> Eine Schwingung, die durch eine Sinus- oder Cosinusfunktion beschrieben werden kann.</li>
-                    <li><input type="radio" name="q1" value="c"> Eine Schwingung, die mit einer konstanten Geschwindigkeit erfolgt.</li>
-                </ul>
-            </div>
-
-            <div class="question" id="question2">
-                <p>2. Wie lässt sich die Auslenkung \( y(t) \) einer harmonischen Schwingung mathematisch beschreiben?</p>
-                <ul class="answers">
-                    <li><input type="radio" name="q2" value="a"> \( y(t) = y_{\text{max}} \cdot \cos(\omega t) \)</li>
-                    <li><input type="radio" name="q2" value="b"> \( y(t) = y_{\text{max}} \cdot \sin(\omega t) \)</li>
-                    <li><input type="radio" name="q2" value="c"> \( y(t) = y_{\text{max}} \cdot \cos(\omega t) + \sin(\omega t) \)</li>
-                </ul>
-            </div>
-
-            <div class="question" id="question3">
-                <p>3. Welche Bedingung muss für eine harmonische Schwingung erfüllt sein?</p>
-                <ul class="answers">
-                    <li><input type="radio" name="q3" value="a"> Die rücktreibende Kraft muss proportional zur Auslenkung sein.</li>
-                    <li><input type="radio" name="q3" value="b"> Die Geschwindigkeit der Schwingung muss konstant sein.</li>
-                    <li><input type="radio" name="q3" value="c"> Die Schwingung muss eine konstante Amplitude haben.</li>
-                </ul>
-            </div>
-
-            <div class="question" id="question4">
-                <p>4. Welches Beispiel beschreibt eine nicht-harmonische Schwingung?</p>
-                <ul class="answers">
-                    <li><input type="radio" name="q4" value="a"> Ein Fadenpendel bei kleinen Winkeln.</li>
-                    <li><input type="radio" name="q4" value="b"> Ein Skater in einer halbkreisförmigen Halfpipe.</li>
-                    <li><input type="radio" name="q4" value="c"> Eine Federpendelbewegung.</li>
-                </ul>
-            </div>
-
-            <button onclick="checkAnswers()">Ergebnisse anzeigen</button>
+    <h1>Mechanische Schwingungen - Quiz</h1>
+    
+    <div class="question">
+        <p><strong>1. Was beschreibt die Funktion \( y(t) = y_{\text{max}} \sin(\omega t) \)?</strong></p>
+        <div class="answer-option">
+            <input type="radio" id="q1a1" name="q1" value="a1"> Die Geschwindigkeit der Schwingung<br>
+            <input type="radio" id="q1a2" name="q1" value="a2"> Die Auslenkung der Schwingung<br>
+            <input type="radio" id="q1a3" name="q1" value="a3"> Die Beschleunigung der Schwingung
         </div>
-
-        <div id="result">
-            <h3>Ergebnisse:</h3>
-            <p id="score"></p>
+    </div>
+    
+    <div class="question">
+        <p><strong>2. Was ist der Phasenwinkel \( \varphi \) in der Formel der harmonischen Schwingung?</strong></p>
+        <div class="answer-option">
+            <input type="radio" id="q2a1" name="q2" value="a1"> Der Zeitpunkt der Schwingung<br>
+            <input type="radio" id="q2a2" name="q2" value="a2"> Der Winkel der Kreisbewegung<br>
+            <input type="radio" id="q2a3" name="q2" value="a3"> Die Amplitude der Schwingung
+        </div>
+    </div>
+    
+    <div class="question">
+        <p><strong>3. Welche Formel beschreibt die Geschwindigkeit einer harmonischen Schwingung?</strong></p>
+        <div class="answer-option">
+            <input type="radio" id="q3a1" name="q3" value="a1"> \( \nu(t) = \omega y_{\text{max}} \cos(\omega t) \)<br>
+            <input type="radio" id="q3a2" name="q3" value="a2"> \( \nu(t) = -\omega^2 y_{\text{max}} \sin(\omega t) \)<br>
+            <input type="radio" id="q3a3" name="q3" value="a3"> \( \nu(t) = y_{\text{max}} \sin(\omega t) \)
+        </div>
+    </div>
+    
+    <div class="question">
+        <p><strong>4. Was ist die Voraussetzung für eine harmonische Schwingung?</strong></p>
+        <div class="answer-option">
+            <input type="radio" id="q4a1" name="q4" value="a1"> Eine konstante Geschwindigkeit<br>
+            <input type="radio" id="q4a2" name="q4" value="a2"> Eine rücktreibende Kraft, die proportional zur Auslenkung ist<br>
+            <input type="radio" id="q4a3" name="q4" value="a3"> Eine gleichmäßige Änderung der Phase
+        </div>
+    </div>
+    
+    <div class="question">
+        <p><strong>5. Für welche Art von Schwingung gilt die Formel \( F_r = -D y \)?</strong></p>
+        <div class="answer-option">
+            <input type="radio" id="q5a1" name="q5" value="a1"> Federpendel mit großer Auslenkung<br>
+            <input type="radio" id="q5a2" name="q5" value="a2"> Fadenpendel mit kleinen Winkeln<br>
+            <input type="radio" id="q5a3" name="q5" value="a3"> Unharmonische Schwingung
+        </div>
+    </div>
+    
+    <div class="question">
+        <p><strong>6. Welche der folgenden Schwingungen ist **nicht** harmonisch?</strong></p>
+        <div class="answer-option">
+            <input type="radio" id="q6a1" name="q6" value="a1"> Ein Fadenpendel mit kleinen Winkeln<br>
+            <input type="radio" id="q6a2" name="q6" value="a2"> Ein Skater in einer halbkreisförmigen Halfpipe<br>
+            <input type="radio" id="q6a3" name="q6" value="a3"> Ein Federpendel mit moderaten Auslenkungen
         </div>
     </div>
 
+    <button onclick="checkAnswers()">Antworten überprüfen</button>
+
+    <div id="result"></div>
+
     <script>
         function checkAnswers() {
-            let score = 0;
-
-            // Frage 1
-            if (document.querySelector('input[name="q1"]:checked') && document.querySelector('input[name="q1"]:checked').value === 'b') {
-                score++;
+            let correctAnswers = 0;
+            
+            // Frage 1: Die richtige Antwort ist "Die Auslenkung der Schwingung"
+            if (document.getElementById('q1a2').checked) {
+                correctAnswers++;
             }
-
-            // Frage 2
-            if (document.querySelector('input[name="q2"]:checked') && document.querySelector('input[name="q2"]:checked').value === 'b') {
-                score++;
+            
+            // Frage 2: Die richtige Antwort ist "Der Winkel der Kreisbewegung"
+            if (document.getElementById('q2a2').checked) {
+                correctAnswers++;
             }
-
-            // Frage 3
-            if (document.querySelector('input[name="q3"]:checked') && document.querySelector('input[name="q3"]:checked').value === 'a') {
-                score++;
+            
+            // Frage 3: Die richtige Antwort ist "ν(t) = ω y_max cos(ω t)"
+            if (document.getElementById('q3a1').checked) {
+                correctAnswers++;
             }
-
-            // Frage 4
-            if (document.querySelector('input[name="q4"]:checked') && document.querySelector('input[name="q4"]:checked').value === 'b') {
-                score++;
+            
+            // Frage 4: Die richtige Antwort ist "Eine rücktreibende Kraft, die proportional zur Auslenkung ist"
+            if (document.getElementById('q4a2').checked) {
+                correctAnswers++;
             }
-
-            // Anzeige der Ergebnisse
-            document.getElementById("quiz").style.display = "none";
-            document.getElementById("result").style.display = "block";
-            document.getElementById("score").innerHTML = "Du hast " + score + " von 4 richtig beantwortet!";
+            
+            // Frage 5: Die richtige Antwort ist "Fadenpendel mit kleinen Winkeln"
+            if (document.getElementById('q5a2').checked) {
+                correctAnswers++;
+            }
+            
+            // Frage 6: Die richtige Antwort ist "Ein Skater in einer halbkreisförmigen Halfpipe"
+            if (document.getElementById('q6a2').checked) {
+                correctAnswers++;
+            }
+            
+            let resultText = "Du hast " + correctAnswers + " von 6 Fragen richtig beantwortet.";
+            if (correctAnswers === 6) {
+                resultText += " Hervorragend!";
+            } else if (correctAnswers >= 4) {
+                resultText += " Gut gemacht!";
+            } else {
+                resultText += " Versuch es nochmal!";
+            }
+            document.getElementById('result').innerHTML = resultText;
         }
     </script>
-
 </body>
 </html>
