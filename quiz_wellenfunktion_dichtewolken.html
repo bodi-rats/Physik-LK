@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz: Wellenfunktion und Dichtewolken</title>
+<style>
+  :root { color-scheme: light; --ink:#1f2937; --muted:#5b6472; --line:#d9dee7; --panel:#f5f7fb; --accent:#2457a7; --good:#176b3a; --bad:#a52626; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#eef2f7; color:var(--ink); font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:900px; margin:32px auto; padding:0 16px 32px; }
+  header { background:#17365d; color:white; border-radius:16px; padding:28px; margin-bottom:20px; }
+  header h1 { margin:0 0 8px; font-size:clamp(1.5rem,4vw,2.15rem); line-height:1.2; }
+  header p { margin:0; color:#e4edf9; }
+  .progress-wrap { margin-top:18px; background:#ffffff35; height:8px; border-radius:20px; overflow:hidden; }
+  #progress { width:0; height:100%; background:#fff; transition:width .2s; }
+  .meta { display:flex; justify-content:space-between; gap:12px; margin-top:8px; font-size:.9rem; color:#e4edf9; }
+  .question { background:white; border:1px solid var(--line); border-radius:14px; padding:20px; margin:14px 0; box-shadow:0 2px 7px #15233a08; }
+  .question h2 { font-size:1.05rem; margin:0 0 14px; }
+  .option { display:flex; align-items:flex-start; gap:10px; border:1px solid var(--line); border-radius:10px; padding:11px 12px; margin:8px 0; cursor:pointer; }
+  .option:hover { background:#f7f9fc; }
+  .option input { margin-top:5px; accent-color:var(--accent); }
+  .option.correct { border-color:#70b88b; background:#edf8f0; }
+  .option.wrong { border-color:#d78b8b; background:#fff0f0; }
+  .feedback { display:none; margin-top:12px; padding:12px; border-radius:9px; background:var(--panel); font-size:.95rem; }
+  .feedback.show { display:block; }
+  .feedback strong { display:block; margin-bottom:4px; }
+  .actions { display:flex; flex-wrap:wrap; gap:10px; margin:22px 0; }
+  button { border:0; border-radius:10px; padding:12px 18px; font:inherit; font-weight:650; cursor:pointer; }
+  button:focus-visible, input:focus-visible { outline:3px solid #80aaf0; outline-offset:2px; }
+  #submit { background:var(--accent); color:white; }
+  #reset { background:#e0e6ef; color:#243247; }
+  button:disabled { opacity:.55; cursor:not-allowed; }
+  #result { display:none; background:white; border:1px solid var(--line); border-radius:14px; padding:22px; margin-top:16px; }
+  #result.show { display:block; }
+  #score { font-size:1.8rem; font-weight:800; margin:0 0 5px; }
+  .small { color:var(--muted); font-size:.9rem; }
+  footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:24px; }
+  @media (max-width:600px) { main { margin:14px auto; } header { padding:22px 18px; } .question { padding:16px; } }
+  @media print { body { background:white; } main { max-width:none; margin:0; } header { background:white; color:black; border:1px solid #999; } header p,.meta { color:#333; } .progress-wrap,.actions { display:none; } .question { break-inside:avoid; box-shadow:none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Quiz: Wellenfunktion und Dichtewolken</h1>
+    <p>10 Fragen zum Elektronen-Doppelspaltversuch und zur Nachweiswahrscheinlichkeitsdichte.</p>
+    <div class="progress-wrap" aria-hidden="true"><div id="progress"></div></div>
+    <div class="meta"><span id="answered">0 von 10 beantwortet</span><span>Einfachauswahl · 10 Punkte</span></div>
+  </header>
+
+  <form id="quiz" novalidate>
+    <section class="question" data-answer="1" data-explanation="Die Nachweiswahrscheinlichkeitsdichte gibt an, wie groß die Nachweiswahrscheinlichkeit bezogen auf die Größe des betrachteten Raumbereichs ist.">
+      <h2>1. Was beschreibt die Nachweiswahrscheinlichkeitsdichte?</h2>
+      <label class="option"><input type="radio" name="q1" value="0"><span>Die Geschwindigkeit eines Elektrons an einem Ort.</span></label>
+      <label class="option"><input type="radio" name="q1" value="1"><span>Die Nachweiswahrscheinlichkeit bezogen auf die Größe des betrachteten Raumbereichs.</span></label>
+      <label class="option"><input type="radio" name="q1" value="2"><span>Die elektrische Ladung eines Elektrons pro Volumen.</span></label>
+      <label class="option"><input type="radio" name="q1" value="3"><span>Die Anzahl aller Elektronen im Doppelspalt.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="2" data-explanation="Das Betragsquadrat |ψ(x,t)|² der Wellenfunktion beschreibt die Nachweiswahrscheinlichkeitsdichte.">
+      <h2>2. Welche Aussage beschreibt die Wahrscheinlichkeitsinterpretation der Wellenfunktion?</h2>
+      <label class="option"><input type="radio" name="q2" value="0"><span>Die Wellenfunktion zeigt die tatsächliche Flugbahn des Elektrons.</span></label>
+      <label class="option"><input type="radio" name="q2" value="1"><span>Das Quadrat der Wellenfunktion gibt die Geschwindigkeit des Elektrons an.</span></label>
+      <label class="option"><input type="radio" name="q2" value="2"><span>Das Betragsquadrat |ψ(x,t)|² beschreibt die Nachweiswahrscheinlichkeitsdichte.</span></label>
+      <label class="option"><input type="radio" name="q2" value="3"><span>Die Wellenfunktion gibt immer den genauen Aufenthaltsort an.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="1" data-explanation="Ist die Dichte in einem kleinen Bereich nahezu konstant, erhält man die Wahrscheinlichkeit näherungsweise durch Dichte mal Volumen: W ≈ |ψ|² · ΔV.">
+      <h2>3. Wie berechnet man näherungsweise die Wahrscheinlichkeit, ein Quantenobjekt in einem kleinen Raumbereich ΔV nachzuweisen, wenn die Dichte dort nahezu konstant ist?</h2>
+      <label class="option"><input type="radio" name="q3" value="0"><span>W ≈ |ψ|² / ΔV</span></label>
+      <label class="option"><input type="radio" name="q3" value="1"><span>W ≈ |ψ|² · ΔV</span></label>
+      <label class="option"><input type="radio" name="q3" value="2"><span>W ≈ ΔV / |ψ|²</span></label>
+      <label class="option"><input type="radio" name="q3" value="3"><span>W ≈ |ψ| · (ΔV)²</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="2" data-explanation="Wo die Nachweiswahrscheinlichkeitsdichte null ist, ist die Nachweiswahrscheinlichkeit für den entsprechenden Bereich ebenfalls null.">
+      <h2>4. Was gilt für einen Ort, an dem die Nachweiswahrscheinlichkeitsdichte null ist?</h2>
+      <label class="option"><input type="radio" name="q4" value="0"><span>Dort wird das Elektron besonders häufig nachgewiesen.</span></label>
+      <label class="option"><input type="radio" name="q4" value="1"><span>Dort ist das Elektron besonders schnell.</span></label>
+      <label class="option"><input type="radio" name="q4" value="2"><span>Dort beträgt die Nachweiswahrscheinlichkeit im betrachteten Bereich null.</span></label>
+      <label class="option"><input type="radio" name="q4" value="3"><span>Dort ist die Wellenfunktion besonders groß.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="2" data-explanation="Die Wellenfunktion ist eine mathematische Funktion. Ihre physikalische Bedeutung wird über das Betragsquadrat als Nachweiswahrscheinlichkeitsdichte beschrieben.">
+      <h2>5. Welche Aussage über die Wellenfunktion ist richtig?</h2>
+      <label class="option"><input type="radio" name="q5" value="0"><span>Sie ist eine unmittelbar messbare Wasserwelle.</span></label>
+      <label class="option"><input type="radio" name="q5" value="1"><span>Sie beschreibt eine klassische Elektronenbahn.</span></label>
+      <label class="option"><input type="radio" name="q5" value="2"><span>Sie ist eine mathematische Funktion, deren Betragsquadrat die Nachweiswahrscheinlichkeitsdichte angibt.</span></label>
+      <label class="option"><input type="radio" name="q5" value="3"><span>Sie gibt die Masse des Elektrons an.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="1" data-explanation="Die Wellenfunktionen der beiden Spaltwege überlagern sich. Je nach Phasenlage entsteht konstruktive oder destruktive Interferenz.">
+      <h2>6. Was führt beim Elektronen-Doppelspaltversuch zu Bereichen hoher und niedriger Nachweiswahrscheinlichkeit?</h2>
+      <label class="option"><input type="radio" name="q6" value="0"><span>Die unterschiedliche Masse der Elektronen.</span></label>
+      <label class="option"><input type="radio" name="q6" value="1"><span>Die Überlagerung der Wellenfunktionen beider Spaltwege und die entstehende Interferenz.</span></label>
+      <label class="option"><input type="radio" name="q6" value="2"><span>Die Anziehung der Elektronen durch den Schirm.</span></label>
+      <label class="option"><input type="radio" name="q6" value="3"><span>Eine zufällige Veränderung der Spaltbreite bei jedem Elektron.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="2" data-explanation="Eine intensivere Färbung steht für eine höhere Nachweiswahrscheinlichkeitsdichte. Bei gleich großen Bereichen ist dann auch die Nachweiswahrscheinlichkeit größer.">
+      <h2>7. Was bedeutet eine besonders intensive Färbung einer Dichtewolke?</h2>
+      <label class="option"><input type="radio" name="q7" value="0"><span>Das Elektron ist dort größer.</span></label>
+      <label class="option"><input type="radio" name="q7" value="1"><span>Das Elektron bewegt sich dort langsamer.</span></label>
+      <label class="option"><input type="radio" name="q7" value="2"><span>Die Nachweiswahrscheinlichkeitsdichte ist dort höher.</span></label>
+      <label class="option"><input type="radio" name="q7" value="3"><span>Dort ist die elektrische Feldstärke immer null.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="1" data-explanation="Jedes Elektron wird einzeln registriert. Bei vielen Wiederholungen entsteht eine Verteilung, die das Interferenzmuster erkennen lässt.">
+      <h2>8. Was geschieht, wenn man den Doppelspaltversuch mit vielen einzelnen Elektronen wiederholt?</h2>
+      <label class="option"><input type="radio" name="q8" value="0"><span>Alle Elektronen treffen denselben Punkt.</span></label>
+      <label class="option"><input type="radio" name="q8" value="1"><span>Die Nachweise ergeben zusammen eine Verteilung, die das Interferenzmuster erkennen lässt.</span></label>
+      <label class="option"><input type="radio" name="q8" value="2"><span>Es entsteht immer eine gleichmäßige Verteilung ohne helle und dunkle Bereiche.</span></label>
+      <label class="option"><input type="radio" name="q8" value="3"><span>Die Elektronen bilden eine durchgehende Wolke auf dem Schirm.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="2" data-explanation="Vor einer entsprechenden Messung beschreibt die Theorie mögliche Nachweisorte und deren Wahrscheinlichkeiten, nicht einen bereits festgelegten klassischen Messort.">
+      <h2>9. Was bedeutet der unbestimmte Zustand eines Quantenobjekts vor einer entsprechenden Messung?</h2>
+      <label class="option"><input type="radio" name="q9" value="0"><span>Das Elektron existiert noch nicht.</span></label>
+      <label class="option"><input type="radio" name="q9" value="1"><span>Das Elektron ist als klassisches Teilchen nachweislich überall gleichzeitig.</span></label>
+      <label class="option"><input type="radio" name="q9" value="2"><span>Sein Ort ist nicht bereits als bestimmter Messwert festgelegt; beschrieben werden Nachweiswahrscheinlichkeiten.</span></label>
+      <label class="option"><input type="radio" name="q9" value="3"><span>Das Elektron hat keine Masse.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section class="question" data-answer="1" data-explanation="Eine Wegmessung verändert die Versuchssituation. Wenn die Weginformation verfügbar ist, wird die Interferenz unter den entsprechenden Messbedingungen unterdrückt.">
+      <h2>10. Warum kann das Aufstellen von Detektoren an beiden Spalten das Versuchsergebnis beeinflussen?</h2>
+      <label class="option"><input type="radio" name="q10" value="0"><span>Die Detektoren vergrößern automatisch den Abstand der Spalte.</span></label>
+      <label class="option"><input type="radio" name="q10" value="1"><span>Die Messung kann Weg-Information liefern und dadurch die Interferenz verändern oder zerstören.</span></label>
+      <label class="option"><input type="radio" name="q10" value="2"><span>Die Detektoren erhöhen die Masse jedes Elektrons.</span></label>
+      <label class="option"><input type="radio" name="q10" value="3"><span>Die Detektoren machen alle Nachweiswahrscheinlichkeiten null.</span></label>
+      <div class="feedback" aria-live="polite"></div>
+    </section>
+
+    <div class="actions">
+      <button type="submit" id="submit">Quiz auswerten</button>
+      <button type="button" id="reset">Neu starten</button>
+    </div>
+  </form>
+
+  <section id="result" aria-live="polite">
+    <p id="score"></p>
+    <p id="summary"></p>
+    <p class="small">Die Rückmeldungen zu den einzelnen Fragen findest du direkt unter den Antwortmöglichkeiten.</p>
+  </section>
+  <footer>Physik · Quantenobjekte · Wellenfunktion und Dichtewolken</footer>
+</main>
+<script>
+(() => {
+  const form = document.getElementById('quiz');
+  const questions = [...document.querySelectorAll('.question')];
+  const answered = document.getElementById('answered');
+  const progress = document.getElementById('progress');
+  const result = document.getElementById('result');
+  const score = document.getElementById('score');
+  const summary = document.getElementById('summary');
+  const submit = document.getElementById('submit');
+
+  function updateProgress() {
+    const count = questions.filter(q => q.querySelector('input:checked')).length;
+    answered.textContent = `${count} von ${questions.length} beantwortet`;
+    progress.style.width = `${count / questions.length * 100}%`;
+    submit.disabled = count !== questions.length;
+    result.classList.remove('show');
+  }
+
+  form.addEventListener('change', updateProgress);
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    let points = 0;
+    questions.forEach(q => {
+      const selected = q.querySelector('input:checked');
+      const correct = q.dataset.answer;
+      const feedback = q.querySelector('.feedback');
+      q.querySelectorAll('.option').forEach(label => {
+        label.classList.remove('correct', 'wrong');
+        const input = label.querySelector('input');
+        input.disabled = true;
+        if (input.value === correct) label.classList.add('correct');
+        if (selected && input === selected && input.value !== correct) label.classList.add('wrong');
+      });
+      feedback.classList.add('show');
+      feedback.innerHTML = `<strong>${selected && selected.value === correct ? 'Richtig beantwortet.' : 'Noch nicht richtig.'}</strong>${q.dataset.explanation}`;
+      if (selected && selected.value === correct) points++;
+    });
+    const percent = Math.round(points / questions.length * 100);
+    score.textContent = `${points} von ${questions.length} Punkten (${percent} %)`;
+    summary.textContent = points >= 9 ? 'Sehr gut! Du beherrschst die zentralen Begriffe sicher.' :
+      points >= 7 ? 'Gut gemacht! Wiederhole bei Bedarf die Fragen mit falschen Antworten.' :
+      points >= 5 ? 'Eine solide Grundlage. Sieh dir die Erklärungen zu den falschen Antworten noch einmal an.' :
+      'Lies die Buchseiten noch einmal und nutze die Erklärungen zur Wiederholung.';
+    result.classList.add('show');
+    submit.disabled = true;
+    result.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  document.getElementById('reset').addEventListener('click', () => {
+    form.reset();
+    questions.forEach(q => {
+      q.querySelectorAll('input').forEach(input => input.disabled = false);
+      q.querySelectorAll('.option').forEach(label => label.classList.remove('correct', 'wrong'));
+      const feedback = q.querySelector('.feedback');
+      feedback.classList.remove('show');
+      feedback.textContent = '';
+    });
+    result.classList.remove('show');
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
